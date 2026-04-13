@@ -21,4 +21,11 @@ export const DEMOS: DemoMeta[] = [
     path: '/demo/geometry',
     tags: ['geometry', 'materials'],
   },
+  {
+    id: 'rain',
+    title: 'Rain Effect',
+    description: 'Particle-based rain simulation with instanced mesh, ripple effects and atmospheric fog.',
+    path: '/demo/rain',
+    tags: ['particles', 'effects', 'instancing'],
+  },
 ]
