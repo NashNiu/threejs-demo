@@ -1,79 +1,75 @@
-import { useRef, useMemo } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls } from '@react-three/drei'
-import * as THREE from 'three'
-import DemoLayout from '@/components/DemoLayout'
+import { useRef, useMemo } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { OrbitControls } from '@react-three/drei';
+import * as THREE from 'three';
+import DemoLayout from '@/components/DemoLayout';
 
-const RAIN_COUNT = 8000
-const AREA = 100
-const RAIN_SPEED = 10
-const RAIN_LENGTH = 0.2
+const RAIN_COUNT = 8000;
+const AREA = 100;
+const RAIN_SPEED = 10;
+const RAIN_LENGTH = 0.2;
 
 function RainDrops() {
-  const meshRef = useRef<THREE.InstancedMesh>(null)
+  const meshRef = useRef<THREE.InstancedMesh>(null);
 
   // 初始化每滴雨的位置和速度（随机分布）
   const { positions, speeds } = useMemo(() => {
-    const positions = new Float32Array(RAIN_COUNT * 3)
-    const speeds = new Float32Array(RAIN_COUNT)
+    const positions = new Float32Array(RAIN_COUNT * 3);
+    const speeds = new Float32Array(RAIN_COUNT);
     for (let i = 0; i < RAIN_COUNT; i++) {
-      positions[i * 3 + 0] = (Math.random() - 0.5) * AREA      // x
-      positions[i * 3 + 1] = Math.random() * 30 - 5             // y（随机高度）
-      positions[i * 3 + 2] = (Math.random() - 0.5) * AREA      // z
-      speeds[i] = 0.8 + Math.random() * 0.4                     // 速度系数
+      positions[i * 3 + 0] = (Math.random() - 0.5) * AREA; // x
+      positions[i * 3 + 1] = Math.random() * 30 - 5; // y（随机高度）
+      positions[i * 3 + 2] = (Math.random() - 0.5) * AREA; // z
+      speeds[i] = 0.8 + Math.random() * 0.4; // 速度系数
     }
-    return { positions, speeds }
-  }, [])
+    return { positions, speeds };
+  }, []);
 
-  const dummy = useMemo(() => new THREE.Object3D(), [])
+  const dummy = useMemo(() => new THREE.Object3D(), []);
 
   // 初始化 InstancedMesh 变换
   useMemo(() => {
-    if (!meshRef.current) return
+    if (!meshRef.current) return;
     for (let i = 0; i < RAIN_COUNT; i++) {
-      dummy.position.set(positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2])
-      dummy.updateMatrix()
-      meshRef.current.setMatrixAt(i, dummy.matrix)
+      dummy.position.set(positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2]);
+      dummy.updateMatrix();
+      meshRef.current.setMatrixAt(i, dummy.matrix);
     }
-    meshRef.current.instanceMatrix.needsUpdate = true
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+    meshRef.current.instanceMatrix.needsUpdate = true;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // 限制单帧最大时间步，避免浏览器标签切换后出现过大的 delta 导致卡顿
   useFrame((_state, delta) => {
-    const dt = Math.min(delta, 0.05) // clamp to ~50ms
-    const mesh = meshRef.current
-    if (!mesh) return
+    const dt = Math.min(delta, 0.05); // clamp to ~50ms
+    const mesh = meshRef.current;
+    if (!mesh) return;
 
     for (let i = 0; i < RAIN_COUNT; i++) {
       // 向下落
-      positions[i * 3 + 1] -= RAIN_SPEED * speeds[i] * dt
+      positions[i * 3 + 1] -= RAIN_SPEED * speeds[i] * dt;
 
       // 超出底部时重置到顶部
       if (positions[i * 3 + 1] < -5) {
-        positions[i * 3 + 1] = 25
-        positions[i * 3 + 0] = (Math.random() - 0.5) * AREA
-        positions[i * 3 + 2] = (Math.random() - 0.5) * AREA
+        positions[i * 3 + 1] = 25;
+        positions[i * 3 + 0] = (Math.random() - 0.5) * AREA;
+        positions[i * 3 + 2] = (Math.random() - 0.5) * AREA;
       }
 
-      dummy.position.set(positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2])
-      dummy.updateMatrix()
-      mesh.setMatrixAt(i, dummy.matrix)
+      dummy.position.set(positions[i * 3], positions[i * 3 + 1], positions[i * 3 + 2]);
+      dummy.updateMatrix();
+      mesh.setMatrixAt(i, dummy.matrix);
     }
-    mesh.instanceMatrix.needsUpdate = true
-  })
+    mesh.instanceMatrix.needsUpdate = true;
+  });
 
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, RAIN_COUNT]}>
       {/* 雨滴：细长圆柱体模拟水线 */}
       <cylinderGeometry args={[0.01, 0.01, RAIN_LENGTH, 4]} />
-      <meshBasicMaterial
-        color="#a8d8f0"
-        transparent
-        opacity={0.55}
-      />
+      <meshBasicMaterial color="#a8d8f0" transparent opacity={0.55} />
     </instancedMesh>
-  )
+  );
 }
 
 function Ground() {
@@ -82,12 +78,12 @@ function Ground() {
       <planeGeometry args={[AREA, AREA]} />
       <meshStandardMaterial color="#1a2030" roughness={0.8} metalness={0.1} />
     </mesh>
-  )
+  );
 }
 
 function Ripples() {
-  const groupRef = useRef<THREE.Group>(null)
-  const timeRef = useRef(0)
+  const groupRef = useRef<THREE.Group>(null);
+  const timeRef = useRef(0);
 
   // 创建若干水面涟漪圆环
   const ripples = useMemo(() => {
@@ -97,36 +93,36 @@ function Ripples() {
       z: (Math.random() - 0.5) * AREA * 0.9,
       phase: Math.random() * Math.PI * 2,
       speed: 0.8 + Math.random() * 1.2,
-    }))
-  }, [])
+    }));
+  }, []);
 
   // 使用累积时间并 clamp 每帧步长，避免可见性切换导致的时间突变
   useFrame((_, delta) => {
-    const dt = Math.min(delta, 0.05)
-    timeRef.current += dt
-    const t = timeRef.current
-    if (!groupRef.current) return
+    const dt = Math.min(delta, 0.05);
+    timeRef.current += dt;
+    const t = timeRef.current;
+    if (!groupRef.current) return;
     groupRef.current.children.forEach((child, i) => {
-      const mesh = child as THREE.Mesh
-      const ripple = ripples[i]
-      const progress = ((t * ripple.speed + ripple.phase) % (Math.PI * 2)) / (Math.PI * 2)
-      const scale = progress * 1.8 + 0.1
-      mesh.scale.set(scale, 1, scale)
-      const mat = mesh.material as THREE.MeshBasicMaterial
-      mat.opacity = (1 - progress) * 0.5
-    })
-  })
+      const mesh = child as THREE.Mesh;
+      const ripple = ripples[i];
+      const progress = ((t * ripple.speed + ripple.phase) % (Math.PI * 2)) / (Math.PI * 2);
+      const scale = progress * 1.8 + 0.1;
+      mesh.scale.set(scale, 1, scale);
+      const mat = mesh.material as THREE.MeshBasicMaterial;
+      mat.opacity = (1 - progress) * 0.5;
+    });
+  });
 
   return (
     <group ref={groupRef} position={[0, -4.98, 0]}>
-      {ripples.map(r => (
+      {ripples.map((r) => (
         <mesh key={r.id} position={[r.x, 0, r.z]} rotation={[-Math.PI / 2, 0, 0]}>
           <ringGeometry args={[0.15, 0.22, 24]} />
           <meshBasicMaterial color="#6ec6f0" transparent opacity={0.4} side={THREE.DoubleSide} />
         </mesh>
       ))}
     </group>
-  )
+  );
 }
 
 export default function RainDemo() {
@@ -135,10 +131,7 @@ export default function RainDemo() {
       title="Rain Effect"
       description="Particle-based rain simulation with instanced mesh, ripple effects and atmospheric fog."
     >
-      <Canvas
-        camera={{ position: [0, 8, 20], fov: 55 }}
-        style={{ background: '#1a0a0f' }}
-      >
+      <Canvas camera={{ position: [0, 8, 20], fov: 55 }} style={{ background: '#1a0a0f' }}>
         {/* 大气雾效 */}
         <fog attach="fog" args={['#0a0e1a', 10, 45]} />
 
@@ -162,5 +155,5 @@ export default function RainDemo() {
         />
       </Canvas>
     </DemoLayout>
-  )
+  );
 }

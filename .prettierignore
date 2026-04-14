@@ -1,0 +1,9 @@
+node_modules
+dist
+build
+.turbo
+.cache
+.vite
+public
+package-lock.json
+yarn.lock
