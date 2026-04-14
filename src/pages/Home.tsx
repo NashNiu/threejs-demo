@@ -15,7 +15,13 @@ export default function Home() {
       <main className={styles.grid}>
         {DEMOS.map((demo) => (
           <Link key={demo.id} to={demo.path} className={styles.card}>
-            <div className={styles.cardPreview} />
+            <div className={styles.cardPreview}>
+              {demo.preview && (
+                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                // @ts-ignore - preview is optional on DemoMeta
+                <img src={demo.preview} alt={`${demo.title} preview`} className={styles.cardPreviewImg} />
+              )}
+            </div>
             <div className={styles.cardBody}>
               <h2 className={styles.cardTitle}>{demo.title}</h2>
               <p className={styles.cardDesc}>{demo.description}</p>
