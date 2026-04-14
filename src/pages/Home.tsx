@@ -1,6 +1,6 @@
-import { Link } from 'react-router-dom'
-import { DEMOS } from '@/demos'
-import styles from './Home.module.css'
+import { Link } from 'react-router-dom';
+import { DEMOS } from '@/demos';
+import styles from './Home.module.css';
 
 export default function Home() {
   return (
@@ -17,9 +17,11 @@ export default function Home() {
           <Link key={demo.id} to={demo.path} className={styles.card}>
             <div className={styles.cardPreview}>
               {demo.preview && (
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore - preview is optional on DemoMeta
-                <img src={demo.preview} alt={`${demo.title} preview`} className={styles.cardPreviewImg} />
+                <img
+                  src={demo.preview}
+                  alt={`${demo.title} preview`}
+                  className={styles.cardPreviewImg}
+                />
               )}
             </div>
             <div className={styles.cardBody}>
@@ -27,7 +29,9 @@ export default function Home() {
               <p className={styles.cardDesc}>{demo.description}</p>
               <div className={styles.tags}>
                 {demo.tags.map((tag) => (
-                  <span key={tag} className={styles.tag}>{tag}</span>
+                  <span key={tag} className={styles.tag}>
+                    {tag}
+                  </span>
                 ))}
               </div>
             </div>
@@ -35,5 +39,5 @@ export default function Home() {
         ))}
       </main>
     </div>
-  )
+  );
 }

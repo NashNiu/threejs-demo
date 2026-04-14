@@ -1,24 +1,24 @@
-import { useRef } from 'react'
-import { Canvas, useFrame } from '@react-three/fiber'
-import { OrbitControls, Grid, Environment } from '@react-three/drei'
-import type { Mesh } from 'three'
-import DemoLayout from '@/components/DemoLayout'
+import { useRef } from 'react';
+import { Canvas, useFrame } from '@react-three/fiber';
+import { OrbitControls, Grid, Environment } from '@react-three/drei';
+import type { Mesh } from 'three';
+import DemoLayout from '@/components/DemoLayout';
 
 function RotatingCube() {
-  const meshRef = useRef<Mesh>(null)
+  const meshRef = useRef<Mesh>(null);
 
   useFrame((_state, delta) => {
-    if (!meshRef.current) return
-    meshRef.current.rotation.x += delta * 0.5
-    meshRef.current.rotation.y += delta * 0.8
-  })
+    if (!meshRef.current) return;
+    meshRef.current.rotation.x += delta * 0.5;
+    meshRef.current.rotation.y += delta * 0.8;
+  });
 
   return (
     <mesh ref={meshRef} castShadow>
       <boxGeometry args={[1.5, 1.5, 1.5]} />
       <meshStandardMaterial color="#7c6aff" roughness={0.3} metalness={0.4} />
     </mesh>
-  )
+  );
 }
 
 export default function BasicScene() {
@@ -27,11 +27,7 @@ export default function BasicScene() {
       title="Basic Scene"
       description="Rotating cube with orbit controls, lighting and grid helper."
     >
-      <Canvas
-        shadows
-        camera={{ position: [3, 3, 5], fov: 50 }}
-        style={{ background: '#0f0f13' }}
-      >
+      <Canvas shadows camera={{ position: [3, 3, 5], fov: 50 }} style={{ background: '#0f0f13' }}>
         <ambientLight intensity={0.4} />
         <directionalLight
           position={[5, 8, 5]}
@@ -60,5 +56,5 @@ export default function BasicScene() {
         <OrbitControls makeDefault />
       </Canvas>
     </DemoLayout>
-  )
+  );
 }
