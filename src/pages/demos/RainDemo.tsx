@@ -5,9 +5,9 @@ import * as THREE from 'three'
 import DemoLayout from '@/components/DemoLayout'
 
 const RAIN_COUNT = 8000
-const AREA = 40
-const RAIN_SPEED = 18
-const RAIN_LENGTH = 0.6
+const AREA = 100
+const RAIN_SPEED = 10
+const RAIN_LENGTH = 0.2
 
 function RainDrops() {
   const meshRef = useRef<THREE.InstancedMesh>(null)
@@ -39,13 +39,15 @@ function RainDrops() {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // 限制单帧最大时间步，避免浏览器标签切换后出现过大的 delta 导致卡顿
   useFrame((_state, delta) => {
+    const dt = Math.min(delta, 0.05) // clamp to ~50ms
     const mesh = meshRef.current
     if (!mesh) return
 
     for (let i = 0; i < RAIN_COUNT; i++) {
       // 向下落
-      positions[i * 3 + 1] -= RAIN_SPEED * speeds[i] * delta
+      positions[i * 3 + 1] -= RAIN_SPEED * speeds[i] * dt
 
       // 超出底部时重置到顶部
       if (positions[i * 3 + 1] < -5) {
@@ -85,6 +87,7 @@ function Ground() {
 
 function Ripples() {
   const groupRef = useRef<THREE.Group>(null)
+  const timeRef = useRef(0)
 
   // 创建若干水面涟漪圆环
   const ripples = useMemo(() => {
@@ -97,8 +100,11 @@ function Ripples() {
     }))
   }, [])
 
-  useFrame(({ clock }) => {
-    const t = clock.getElapsedTime()
+  // 使用累积时间并 clamp 每帧步长，避免可见性切换导致的时间突变
+  useFrame((_, delta) => {
+    const dt = Math.min(delta, 0.05)
+    timeRef.current += dt
+    const t = timeRef.current
     if (!groupRef.current) return
     groupRef.current.children.forEach((child, i) => {
       const mesh = child as THREE.Mesh
@@ -131,7 +137,7 @@ export default function RainDemo() {
     >
       <Canvas
         camera={{ position: [0, 8, 20], fov: 55 }}
-        style={{ background: '#0a0e1a' }}
+        style={{ background: '#1a0a0f' }}
       >
         {/* 大气雾效 */}
         <fog attach="fog" args={['#0a0e1a', 10, 45]} />
