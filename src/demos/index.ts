@@ -37,4 +37,12 @@ export const DEMOS: DemoMeta[] = [
     preview: rainPreview,
     tags: ['particles', 'effects', 'instancing'],
   },
+  {
+    id: 'galaxy',
+    title: 'Galaxy',
+    description:
+      'Spiral galaxy with 23 000+ particles, logarithmic spiral arms, colour gradients and additive blending.',
+    path: '/demo/galaxy',
+    tags: ['particles', 'shader', 'space', 'effects'],
+  },
 ];
