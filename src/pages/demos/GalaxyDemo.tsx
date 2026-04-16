@@ -5,10 +5,10 @@ import * as THREE from 'three';
 import DemoLayout from '@/components/DemoLayout';
 
 // ── 配置参数 ──────────────────────────────────────────────────────────────────
-const ARM_COUNT = 5;           // 旋臂数量
-const STARS_PER_ARM = 4000;    // 每条旋臂的恒星数
-const CORE_STARS = 3000;       // 核球随机恒星数
-const BG_STARS = 3000;         // 背景星场数量
+const ARM_COUNT = 2;           // 旋臂数量
+const STARS_PER_ARM = 2000;    // 每条旋臂的恒星数
+const CORE_STARS = 1000;       // 核球随机恒星数
+const BG_STARS = 7000;         // 背景星场数量
 const MAX_RADIUS = 12;         // 星系最大半径
 const SPIRAL_TURNS = 2.2;      // 旋臂圈数
 const ROTATION_SPEED = 0.04;   // 旋转角速度（弧度/秒）
@@ -33,9 +33,9 @@ function Galaxy() {
     const sizes = new Float32Array(total);
 
     // 预定义颜色节点（沿半径方向渐变）
-    const coreColor = new THREE.Color('#fffbe6');   // 核心：暖白
-    const midColor = new THREE.Color('#6ea8ff');    // 中段：冷蓝
-    const outerColor = new THREE.Color('#c084fc');  // 外沿：紫色
+    const coreColor = new THREE.Color('#c2d418');   // 核心：暖白
+    const midColor = new THREE.Color('#c1cfe4');    // 中段：冷蓝
+    const outerColor = new THREE.Color('#a484fc');  // 外沿：紫色
 
     let idx = 0;
 

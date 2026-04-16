@@ -9,6 +9,7 @@ export interface DemoMeta {
 const basicPreview = new URL('./imgs/1.png', import.meta.url).href;
 const geometryPreview = new URL('./imgs/2.png', import.meta.url).href;
 const rainPreview = new URL('./imgs/3.png', import.meta.url).href;
+const galaxyPreview = new URL('./imgs/4.png', import.meta.url).href;
 
 export const DEMOS: DemoMeta[] = [
   {
@@ -43,6 +44,7 @@ export const DEMOS: DemoMeta[] = [
     description:
       'Spiral galaxy with 23 000+ particles, logarithmic spiral arms, colour gradients and additive blending.',
     path: '/demo/galaxy',
+    preview: galaxyPreview,
     tags: ['particles', 'shader', 'space', 'effects'],
   },
 ];
